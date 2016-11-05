@@ -43,6 +43,6 @@ data() {
 
   rm -r $place
 }
-
+[ -e $pwd/$db ] && rm $pwd/$db
 schema
 data
