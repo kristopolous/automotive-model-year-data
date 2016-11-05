@@ -41,7 +41,7 @@ data() {
     cat $file | sed -Ee "1 s/^(.)/$insert\1/" -e '$ s/,$/;/g' | sqlite3 $pwd/$db 
   done
 
-  #rm -r $place
+  rm -r $place
 }
 
 schema
