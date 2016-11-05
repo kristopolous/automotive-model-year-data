@@ -9,7 +9,7 @@ if [ $# -eq 0 ]; then
 fi
 
 db=$1
-insert='INSERT INTO VehicleModelYear (year, make, model) VALUES '
+insert='INSERT INTO VehicleModelYear (make, model) VALUES '
 pwd=`pwd`
 
 schema() {
@@ -17,12 +17,9 @@ schema() {
   cat << ENDL | sqlite3 $pwd/$db 
     CREATE TABLE 'VehicleModelYear' (
       'id' INTEGER PRIMARY KEY,
-      'year' INTEGER NOT NULL,
       'make' TEXT NULL,
-      'model' TEXT NOT NULL,
-      UNIQUE ('year', 'make', 'model')
+      'model' TEXT NOT NULL
     );
-    CREATE INDEX 'I_VehicleModelYear_year' on VehicleModelYear('year');
     CREATE INDEX 'I_VehicleModelYear_make' on VehicleModelYear('make');
     CREATE INDEX 'I_VehicleModelYear_model' on VehicleModelYear('model');
 ENDL
@@ -34,17 +31,17 @@ data() {
   place=`mktemp -d`
 
   cd $place
-  split -l 500 $pwd/data.sql 
+  split -l 500 $pwd/data-clean.sql
 
   cat xaa | grep -v "$insert" > xaa.tmp
   mv xaa.tmp xaa
 
   for file in *; do
-    echo -n .
+    echo -n '.'
     cat $file | sed -Ee "1 s/^(.)/$insert\1/" -e '$ s/,$/;/g' | sqlite3 $pwd/$db 
   done
 
-  rm -r $place
+  #rm -r $place
 }
 
 schema
